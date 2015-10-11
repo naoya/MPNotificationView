@@ -17,11 +17,6 @@ static NSMutableDictionary * _registeredTypes;
 
 static CGRect notificationRect()
 {
-    if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
-    {
-        return CGRectMake(0.0f, 0.0f, [UIScreen mainScreen].bounds.size.height, kMPNotificationHeight);
-    }
-    
     return CGRectMake(0.0f, 0.0f, [UIScreen mainScreen].bounds.size.width, kMPNotificationHeight);
 }
 
@@ -109,56 +104,17 @@ NSString *kMPNotificationViewTapReceivedNotification = @"kMPNotificationViewTapR
 - (void) rotateNotificationWindow
 {
     CGRect frame = notificationRect();
-    BOOL isPortrait = (frame.size.width == [UIScreen mainScreen].bounds.size.width);
     
-    if (isPortrait)
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
     {
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-        {
-            frame.size.width = kMPNotificationIPadWidth;
-        }
-        
-        if ([[UIDevice currentDevice] orientation] == UIDeviceOrientationPortraitUpsideDown)
-        {
-            frame.origin.y = [UIScreen mainScreen].bounds.size.height - kMPNotificationHeight;
-            self.transform = CGAffineTransformMakeRotation(RADIANS(180.0f));
-        }
-        else
-        {
-            self.transform = CGAffineTransformIdentity;
-        }
+        frame.size.width = kMPNotificationIPadWidth;
     }
-    else
-    {
-        frame.size.height = frame.size.width;
-        frame.size.width  = kMPNotificationHeight;
-        
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-        {
-            frame.size.height = kMPNotificationIPadWidth;
-        }
-        
-        if ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeLeft)
-        {
-            frame.origin.x = [UIScreen mainScreen].bounds.size.width - frame.size.width;
-            self.transform = CGAffineTransformMakeRotation(RADIANS(90.0f));
-        }
-        else
-        {
-            self.transform = CGAffineTransformMakeRotation(RADIANS(-90.0f));
-        }
-    }
+    
+    self.transform = CGAffineTransformIdentity;
     
     self.frame = frame;
     CGPoint center = self.center;
-    if (isPortrait)
-    {
-        center.x = CGRectGetMidX([UIScreen mainScreen].bounds);
-    }
-    else
-    {
-        center.y = CGRectGetMidY([UIScreen mainScreen].bounds);
-    }
+    center.x = CGRectGetMidX([UIScreen mainScreen].bounds);
     self.center = center;
 }
 
