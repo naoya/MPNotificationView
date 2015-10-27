@@ -287,6 +287,9 @@ static CGFloat const __imagePadding = 8.0f;
     {
         __notificationWindow = [[MPNotificationWindow alloc] initWithFrame:notificationRect()];
         __notificationWindow.hidden = NO;
+
+        // Hack for iOS9
+        __notificationWindow.rootViewController = [UIViewController new];
     }
     
     MPNotificationView * notification;
